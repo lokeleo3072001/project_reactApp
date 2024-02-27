@@ -1,8 +1,8 @@
-import "./App.css";
-import FormCRUD from "./component/form/FormCRUD";
+import FormCRUD from "./component/formCRUD/FormCRUD";
+import AllUser from "./component/listUser/AllUser";
 
 function App() {
-    return <FormCRUD />;
+  return <AllUser />;
 }
 
 export default App;

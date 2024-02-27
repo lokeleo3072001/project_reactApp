@@ -1,0 +1,10 @@
+body {
+  font-family: "Noto Sans", sans-serif !important;
+  font-size: 16px;
+  color: rgba(102, 102, 102, 1);
+  background-color: rgba(228, 222, 254, 1);
+}
+
+.ant-form {
+  font-family: "Noto Sans", sans-serif !important;
+}
