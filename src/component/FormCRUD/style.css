@@ -14,11 +14,26 @@
     margin-top: 30px;
 }
 
+.ant-form-item {
+    display: flex;
+    flex-direction: column 
+}
+
+.ant-form-item-label {
+    margin-bottom: 8px;
+}
+
+label.ant-form-item-required{
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+    font-size: 12px;
+    font-family: "Noto Sans", sans-serif !important;
+}
+
 .input-text::placeholder {
     color: #666666;
     font-size: 16px;
     font-family: "Noto Sans", sans-serif !important;
-  }
+}
 
 .title-input,
 label.ant-checkbox-wrapper.ant-checkbox-wrapper-in-form-item > span {
@@ -51,13 +66,6 @@ span.ant-checkbox-inner{
     border-radius: 8px !important;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
 }
-
-
-
-.label{
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
-}
-
 
 .ant-checkbox-checked .ant-checkbox-inner {
     background-color: white;

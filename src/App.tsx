@@ -1,5 +1,4 @@
-import FormCRUD from "./component/formCRUD/FormCRUD";
-import AllUser from "./component/listUser/AllUser";
+import AllUser from "./component/HomePage";
 
 function App() {
   return <AllUser />;

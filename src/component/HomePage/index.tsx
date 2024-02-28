@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { sendGet } from "../../api";
 import { Button, Table } from "antd";
-import "./AllUser.css";
-import FormCRUD from "../formCRUD/FormCRUD";
+import "./style.css";
+import FormCRUD from "../FormCRUD";
 import ModalAcceptDelete from "../../ModalAcceptDelete/ModalAcceptDelete";
 
 function AllUser() {

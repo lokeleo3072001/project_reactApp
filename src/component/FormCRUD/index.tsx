@@ -9,7 +9,7 @@ import {
   Switch,
 } from "antd";
 import { sendGet, sendPost } from "../../api";
-import "./FormCRUD.css";
+import "./style.css";
 import { useEffect, useState } from "react";
 
 interface User {
@@ -26,6 +26,7 @@ const FormCRUD = (props: any) => {
   const [dataUser, setDataUser] = useState<User | null>(null);
   const { id, setID, isOpen, setOpen, setDataSource } = props;
   const [statusSwitch, setStatusSwitch] = useState(false);
+  const [form] = Form.useForm();
 
   const inputText = [
     {
@@ -73,8 +74,6 @@ const FormCRUD = (props: any) => {
     "Dropdown option 5",
   ];
 
-  const [form] = Form.useForm();
-
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
@@ -84,6 +83,21 @@ const FormCRUD = (props: any) => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (dataUser) {
+      form.setFieldsValue({
+        userName: dataUser.userName,
+        password: dataUser.password,
+        note: dataUser.note,
+        checkboxForm: dataUser.rememberMe || false,
+        radio: dataUser.radio.toString(),
+        selectBox: dataUser.selectOption,
+        switchForm: dataUser.switchForm || false,
+      });
+      setStatusSwitch(dataUser.switchForm);
+    }
+  }, [dataUser]);
 
   const submitForm = async (value: any) => {
     let submitData = {
@@ -125,21 +139,6 @@ const FormCRUD = (props: any) => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    if (dataUser) {
-      form.setFieldsValue({
-        userName: dataUser.userName,
-        password: dataUser.password,
-        note: dataUser.note,
-        checkboxForm: dataUser.rememberMe || false,
-        radio: dataUser.radio.toString(),
-        selectBox: dataUser.selectOption,
-        switchForm: dataUser.switchForm || false,
-      });
-      setStatusSwitch(dataUser.switchForm);
-    }
-  }, [dataUser]);
-
   return (
     <Modal
       className="model-custom"
@@ -148,43 +147,40 @@ const FormCRUD = (props: any) => {
       onCancel={cancelRequest}
       footer={null}
     >
-      <Form form={form} onFinish={submitForm} className="form container">
+      <Form
+        layout="vertical"
+        form={form}
+        onFinish={submitForm}
+        className="form container"
+      >
         {inputText.map((dataInput, index) => {
           return (
             <div key={index}>
-              <label className="title-input" htmlFor={dataInput.label}>
-                {dataInput.label}
-              </label>
-              <div>
-                <Form.Item
-                  key={dataInput.value}
-                  name={dataInput.value}
-                  validateTrigger="onBlur"
-                  hasFeedback
-                  rules={[
-                    {
-                      min: dataInput.min,
-                      max: dataInput.max,
-                      required: true,
-                      message: `You need enter your ${dataInput.label} between ${dataInput.min} and ${dataInput.max} characters`,
-                    },
-                  ]}
-                >
-                  <Input
-                    type={dataInput.type}
-                    id={dataInput.value}
-                    className="input-text"
-                    placeholder={dataInput.placeHoler}
-                    autoComplete={`new-${dataInput.value}`}
-                  ></Input>
-                </Form.Item>
-                <p className="error"></p>
-                <img
-                  className="img-error"
-                  src="./warning.png"
-                  alt="Img error"
-                />
-              </div>
+              <Form.Item
+                key={dataInput.value}
+                name={dataInput.value}
+                validateTrigger="onBlur"
+                hasFeedback
+                rules={[
+                  {
+                    min: dataInput.min,
+                    max: dataInput.max,
+                    required: true,
+                    message: `You need enter your ${dataInput.label} between ${dataInput.min} and ${dataInput.max} characters`,
+                  },
+                ]}
+                label={dataInput.label}
+              >
+                <Input
+                  type={dataInput.type}
+                  id={dataInput.value}
+                  className="input-text"
+                  placeholder={dataInput.placeHoler}
+                  autoComplete={`new-${dataInput.value}`}
+                ></Input>
+              </Form.Item>
+              <p className="error"></p>
+              <img className="img-error" src="./warning.png" alt="Img error" />
             </div>
           );
         })}
@@ -196,21 +192,17 @@ const FormCRUD = (props: any) => {
         >
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
-        <div>
-          <label>Radio buttons</label>
-
-          <Form.Item name={"radio"} initialValue={"0"}>
-            <Radio.Group>
-              {radioInput.map((data, index) => {
-                return (
-                  <div className="radio-index" key={index}>
-                    <Radio value={index.toString()}>{data.name}</Radio>
-                  </div>
-                );
-              })}
-            </Radio.Group>
-          </Form.Item>
-        </div>
+        <Form.Item name={"radio"} initialValue={"0"} label={"Radio Buttons"}>
+          <Radio.Group>
+            {radioInput.map((data, index) => {
+              return (
+                <div className="radio-index" key={index}>
+                  <Radio value={index.toString()}>{data.name}</Radio>
+                </div>
+              );
+            })}
+          </Radio.Group>
+        </Form.Item>
 
         <div>
           <Form.Item className="switch-form" name={"switchForm"}>
@@ -218,20 +210,22 @@ const FormCRUD = (props: any) => {
           </Form.Item>
           <span className="status-switch">{statusSwitch ? "On" : "Off"}</span>
         </div>
-        <div>
-          <label className="dropdown-title">Dropdown Title</label>
-          <Form.Item name={"selectBox"} initialValue={option[0]}>
-            <Select className="input-text">
-              {option.map((data, index) => {
-                return (
-                  <Select.Option key={index.toString()} value={data}>
-                    {data}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-        </div>
+
+        <Form.Item
+          name={"selectBox"}
+          initialValue={option[0]}
+          label={"Dropdown Title"}
+        >
+          <Select className="input-text">
+            {option.map((data, index) => {
+              return (
+                <Select.Option key={index.toString()} value={data}>
+                  {data}
+                </Select.Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
         <div>
           <Button className="btn-custom cancel">Cancel</Button>
           <Button className="btn-custom next" htmlType="submit">
