@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { sendDelete, sendGet } from "../../api";
+import { sendGet } from "../../api";
 import { Button, Table } from "antd";
 import "./AllUser.css";
 import FormCRUD from "../formCRUD/FormCRUD";
+import ModalAcceptDelete from "../../ModalAcceptDelete/ModalAcceptDelete";
 
 function AllUser() {
   const [dataSource, setDataSource] = useState([]);
   const [openForm, setOpenForm] = useState(false);
+  const [id, setID] = useState();
+  const [isOpenModalDelete, setIsOpenModalDelete] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,15 +20,19 @@ function AllUser() {
   }, []);
 
   const radioInput = [
-    { name: "Radio selection 1", value: "1" },
-    { name: "Radio selection 2", value: "2" },
-    { name: "Radio selection 3", value: "3" },
+    "Radio selection 1",
+    "Radio selection 2",
+    "Radio selection 3",
   ];
 
   const deleteUser = (value: any) => {
-    sendDelete("deleteProduct", { id: value });
-    const newDataSource = dataSource.filter((item) => item["id"] !== value);
-    setDataSource(newDataSource);
+    setIsOpenModalDelete(true);
+    setID(value);
+  };
+
+  const changeUser = (value: any) => {
+    setID(value);
+    setOpenForm(true);
   };
 
   const columns = [
@@ -46,7 +53,7 @@ function AllUser() {
       title: "Password",
       dataIndex: "password",
       key: "password",
-      width: "15%",
+      width: "10%",
       render: (record: any) => {
         return (
           <>
@@ -77,7 +84,7 @@ function AllUser() {
         return (
           <>
             <span className="text-name">
-              {radioInput[parseInt(record, 10)].name}
+              {radioInput[parseInt(record, 10)]}
             </span>
           </>
         );
@@ -131,19 +138,44 @@ function AllUser() {
         return <Button onClick={() => deleteUser(record)}>Xoá</Button>;
       },
     },
+    {
+      title: "Change",
+      dataIndex: "id",
+      key: "id",
+      width: "10%",
+      render: (record: any) => {
+        return <Button onClick={() => changeUser(record)}>Sửa</Button>;
+      },
+    },
   ];
 
   return (
     <div>
-      <Table dataSource={dataSource} columns={columns} className="table" />
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        className="table"
+        rowKey="id"
+      />
       <Button className="btn-add" onClick={() => setOpenForm(!openForm)}>
         Add
       </Button>
+      {isOpenModalDelete && (
+        <ModalAcceptDelete
+          idDelete={id}
+          setIDDelete={setID}
+          isOpenModalDelete={isOpenModalDelete}
+          setIsOpenModalDelete={setIsOpenModalDelete}
+          dataSource={dataSource}
+          setDataSource={setDataSource}
+        ></ModalAcceptDelete>
+      )}
       {openForm && (
         <FormCRUD
+          id={id}
+          setID={setID}
           isOpen={openForm}
           setOpen={setOpenForm}
-          dataSource={dataSource}
           setDataSource={setDataSource}
         ></FormCRUD>
       )}

@@ -23,9 +23,11 @@ axiosInstance.interceptors.response.use(
 
 export const sendGet = (url, params) =>
     axiosInstance.get(url, { params }).then((res) => res.data);
+
 export const sendPost = (url, params, queryParams) =>
     axiosInstance
         .post(url, params, { params: queryParams })
         .then((res) => res.data);
+        
 export const sendDelete = (url, params) =>
     axiosInstance.delete(url, { params }).then((res) => res.data);

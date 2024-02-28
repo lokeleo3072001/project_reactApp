@@ -10,18 +10,32 @@ import {
 } from "antd";
 import { sendGet, sendPost } from "../../api";
 import "./FormCRUD.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+interface User {
+  id: number;
+  userName: string;
+  password: string;
+  note: String;
+  radio: number;
+  rememberMe: boolean;
+  switchForm: boolean;
+  selectOption: boolean;
+}
 const FormCRUD = (props: any) => {
-  const { isOpen, setOpen, dataSource, setDataSource } = props;
+  const [dataUser, setDataUser] = useState<User | null>(null);
+  const { id, setID, isOpen, setOpen, setDataSource } = props;
   const [statusSwitch, setStatusSwitch] = useState(false);
+
   const inputText = [
     {
       label: "Username",
-      value: "username",
+      value: "userName",
       type: "text",
       placeHoler: "Enter username",
       error: "You need enter username",
+      min: 1,
+      max: 30,
     },
     {
       label: "Password",
@@ -30,13 +44,17 @@ const FormCRUD = (props: any) => {
       type: "password",
       note: "Your password is between 4 and 12 characters",
       error: "You need enter password",
+      min: 4,
+      max: 12,
     },
     {
       label: "Input Text Label",
-      value: "anything",
+      value: "note",
       type: "text",
       placeHoler: "Typing here",
       error: "You need enter Text Label",
+      min: 1,
+      max: 30,
     },
   ];
 
@@ -57,59 +75,107 @@ const FormCRUD = (props: any) => {
 
   const [form] = Form.useForm();
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (id) {
+        const res = await sendGet("getProduct", { id: id });
+        setDataUser(res);
+      }
+    };
+    fetchData();
+  }, []);
+
   const submitForm = async (value: any) => {
-    const submitData = {
-      userName: value.username,
+    let submitData = {
+      userName: value.userName,
       password: value.password,
-      note: value.anything,
-      rememberMe: value.checkbox,
+      note: value.note,
+      rememberMe: value.checkboxForm,
       radio: value.radio,
-      switchForm: statusSwitch ? 1 : 0,
+      switchForm: statusSwitch,
       selectOption: value.selectBox,
     };
-    const res = await sendPost(`saveProduct`, submitData);
-    setDataSource((prevData: any) => [
-      ...prevData,
-      { id: res.id, ...submitData },
-    ]);
+
+    if (id) {
+      await sendPost(`updateProduct`, { id: id, ...submitData });
+      setDataSource((prevData: any) => {
+        const newDataSource = [...prevData].filter(
+          (item: any) => item.id !== id
+        );
+
+        const newData = [...newDataSource, { id: id, ...submitData }];
+
+        if (Array.isArray(prevData)) {
+          newData.sort((a: any, b: any) => a.id - b.id);
+        }
+        return newData;
+      });
+    } else {
+      const res = await sendPost(`saveProduct`, submitData);
+      setDataSource((prevData: any) => [
+        ...prevData,
+        { id: res.id, ...submitData },
+      ]);
+    }
     setOpen(false);
   };
+
+  const cancelRequest = () => {
+    setID();
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    if (dataUser) {
+      form.setFieldsValue({
+        userName: dataUser.userName,
+        password: dataUser.password,
+        note: dataUser.note,
+        checkboxForm: dataUser.rememberMe || false,
+        radio: dataUser.radio.toString(),
+        selectBox: dataUser.selectOption,
+        switchForm: dataUser.switchForm || false,
+      });
+      setStatusSwitch(dataUser.switchForm);
+    }
+  }, [dataUser]);
+
   return (
     <Modal
       className="model-custom"
       title={null}
       open={isOpen}
-      onOk={() => setOpen(false)}
-      onCancel={() => setOpen(false)}
+      onCancel={cancelRequest}
       footer={null}
     >
       <Form form={form} onFinish={submitForm} className="form container">
-        {inputText.map((data) => {
+        {inputText.map((dataInput, index) => {
           return (
-            <div key={data.value}>
-              <label className="title-input" htmlFor={data.label}>
-                {data.label}
+            <div key={index}>
+              <label className="title-input" htmlFor={dataInput.label}>
+                {dataInput.label}
               </label>
               <div>
                 <Form.Item
-                  name={data.value}
+                  key={dataInput.value}
+                  name={dataInput.value}
                   validateTrigger="onBlur"
                   hasFeedback
                   rules={[
                     {
-                      min: 4,
-                      max: 12,
+                      min: dataInput.min,
+                      max: dataInput.max,
                       required: true,
-                      message: `You need enter your ${data.label} between 4 and 12 characters`,
+                      message: `You need enter your ${dataInput.label} between ${dataInput.min} and ${dataInput.max} characters`,
                     },
                   ]}
                 >
                   <Input
-                    type={data.type}
-                    id={data.value}
-                    name={data.value}
+                    type={dataInput.type}
+                    id={dataInput.value}
                     className="input-text"
-                    placeholder={data.placeHoler}
+                    placeholder={dataInput.placeHoler}
+                    autoComplete={`new-${dataInput.value}`}
                   ></Input>
                 </Form.Item>
                 <p className="error"></p>
@@ -126,7 +192,7 @@ const FormCRUD = (props: any) => {
         <Form.Item
           valuePropName="checked"
           className="input-container"
-          name={"checkbox"}
+          name={"checkboxForm"}
         >
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
@@ -147,10 +213,10 @@ const FormCRUD = (props: any) => {
         </div>
 
         <div>
-          <Form.Item name={"switch"}>
+          <Form.Item className="switch-form" name={"switchForm"}>
             <Switch onChange={() => setStatusSwitch(!statusSwitch)}></Switch>
-            <span style={{ marginLeft: 8 }}>{statusSwitch ? "On" : "Off"}</span>
           </Form.Item>
+          <span className="status-switch">{statusSwitch ? "On" : "Off"}</span>
         </div>
         <div>
           <label className="dropdown-title">Dropdown Title</label>
@@ -169,7 +235,7 @@ const FormCRUD = (props: any) => {
         <div>
           <Button className="btn-custom cancel">Cancel</Button>
           <Button className="btn-custom next" htmlType="submit">
-            Next
+            {id ? "Accept" : "Next"}
           </Button>
         </div>
       </Form>

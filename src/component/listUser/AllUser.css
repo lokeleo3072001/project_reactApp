@@ -1,10 +1,12 @@
 .btn-add{
     float: right;
-    margin-right: 20px;
+    position: sticky;
     background-color: rgba(122,92,250,1);
     color: white;
     width: 172px;
     height: 56px;
     padding: 16px !important;
     font-family: "Noto Sans", sans-serif !important;
+    right: 15px;
+    bottom: 0px;
 }
