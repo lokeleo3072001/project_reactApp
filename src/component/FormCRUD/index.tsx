@@ -28,6 +28,7 @@ const FormCRUD = (props: any) => {
   const [statusSwitch, setStatusSwitch] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
   const [form] = Form.useForm();
+  const passwordDefault = "****";
 
   const inputText = [
     {
@@ -59,7 +60,7 @@ const FormCRUD = (props: any) => {
       blurPassword: () => {
         if (!isChangePassword) {
           form.setFieldsValue({
-            password: dataUser?.password,
+            password: passwordDefault,
           });
         }
       },
@@ -106,7 +107,7 @@ const FormCRUD = (props: any) => {
     if (dataUser) {
       form.setFieldsValue({
         userName: dataUser.userName,
-        password: dataUser.password,
+        password: passwordDefault,
         note: dataUser.note,
         checkboxForm: dataUser.rememberMe || false,
         radio: dataUser.radio.toString(),
@@ -173,36 +174,32 @@ const FormCRUD = (props: any) => {
       >
         {inputText.map((dataInput, index) => {
           return (
-            <div key={index}>
-              <Form.Item
-                key={dataInput.value}
-                name={dataInput.value}
-                validateTrigger="onBlur"
-                hasFeedback
-                rules={[
-                  {
-                    min: dataInput.min,
-                    max: dataInput.max,
-                    required: true,
-                    message: `You need enter your ${dataInput.label} between ${dataInput.min} and ${dataInput.max} characters`,
-                  },
-                ]}
-                label={dataInput.label}
-              >
-                <Input
-                  type={dataInput.type}
-                  id={dataInput.value}
-                  className="input-text"
-                  placeholder={dataInput.placeHoler}
-                  onClick={dataInput?.setPassword}
-                  onBlur={dataInput?.blurPassword}
-                  onChange={dataInput?.onChangePassword}
-                  autoComplete={`new-${dataInput.value}`}
-                ></Input>
-              </Form.Item>
-              <p className="error"></p>
-              <img className="img-error" src="./warning.png" alt="Img error" />
-            </div>
+            <Form.Item
+              key={dataInput.value}
+              name={dataInput.value}
+              validateTrigger="onBlur"
+              hasFeedback
+              rules={[
+                {
+                  min: dataInput.min,
+                  max: dataInput.max,
+                  required: true,
+                  message: `You need enter your ${dataInput.label} between ${dataInput.min} and ${dataInput.max} characters`,
+                },
+              ]}
+              label={dataInput.label}
+            >
+              <Input
+                type={dataInput.type}
+                id={dataInput.value}
+                className="input-text"
+                placeholder={dataInput.placeHoler}
+                onClick={dataInput?.setPassword}
+                onBlur={dataInput?.blurPassword}
+                onChange={dataInput?.onChangePassword}
+                autoComplete={`new-${dataInput.value}`}
+              ></Input>
+            </Form.Item>
           );
         })}
 
@@ -247,8 +244,10 @@ const FormCRUD = (props: any) => {
             })}
           </Select>
         </Form.Item>
-        <div>
-          <Button className="btn-custom cancel">Cancel</Button>
+        <div className="all-btn">
+          <Button onClick={() => setOpen(false)} className="btn-custom cancel">
+            Cancel
+          </Button>
           <Button className="btn-custom next" htmlType="submit">
             {id ? "Accept" : "Next"}
           </Button>

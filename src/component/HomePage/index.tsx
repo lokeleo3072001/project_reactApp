@@ -3,7 +3,7 @@ import { sendGet } from "../../api";
 import { Button, Table } from "antd";
 import "./style.css";
 import FormCRUD from "../FormCRUD";
-import ModalAcceptDelete from "../../ModalAcceptDelete/ModalAcceptDelete";
+import ModalAcceptDelete from "../../ModalAcceptDelete";
 
 function AllUser() {
   const [dataSource, setDataSource] = useState([]);
@@ -12,9 +12,14 @@ function AllUser() {
   const [isOpenModalDelete, setIsOpenModalDelete] = useState(false);
 
   useEffect(() => {
+    console.log(1111);
     const fetchData = async () => {
-      const res = await sendGet(`getAllProduct`);
-      setDataSource(res);
+      try {
+        const res = await sendGet(`getAllProduct`);
+        setDataSource(res);
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchData();
   }, []);
@@ -40,19 +45,6 @@ function AllUser() {
       title: "UserName",
       dataIndex: "userName",
       key: "userName",
-      width: "10%",
-      render: (record: any) => {
-        return (
-          <>
-            <span className="text-name">{record}</span>
-          </>
-        );
-      },
-    },
-    {
-      title: "Password",
-      dataIndex: "password",
-      key: "password",
       width: "10%",
       render: (record: any) => {
         return (
