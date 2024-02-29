@@ -1,32 +1,32 @@
-.btn-add{
-    position: absolute;
-    background-color: rgba(122,92,250,1);
-    color: white;
-    width: 172px;
-    height: 56px;
-    padding: 16px !important;
-    font-family: "Noto Sans", sans-serif !important;
-    top: 15px;
-    right: 10px;
+.btn-add {
+  position: absolute;
+  background-color: rgba(122, 92, 250, 1);
+  color: white;
+  width: 172px;
+  height: 56px;
+  padding: 16px !important;
+  font-family: "Noto Sans", sans-serif !important;
+  top: 15px;
+  right: 10px;
 }
 
-.btn{
-    height: 40px;
-    width: 80px;
-    background-color: rgba(122,92,250,1);
-    color: white;
+.btn {
+  height: 40px;
+  width: 80px;
+  background-color: rgba(122, 92, 250, 1);
+  color: white;
 }
 
-.ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover{
-    border-color: rgba(122,92,250,1);
-    color: rgba(122,92,250,1);
+.ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
+  border-color: rgba(122, 92, 250, 1);
+  color: rgba(122, 92, 250, 1);
 }
 
-.btn-change{
-    margin-left: 20px;
+.btn-change {
+  margin-left: 20px;
 }
 
-.btn-delete{
-    background-color: white;
-    color: rgba(122,92,250,1);
+.btn-delete {
+  background-color: white;
+  color: rgba(122, 92, 250, 1);
 }

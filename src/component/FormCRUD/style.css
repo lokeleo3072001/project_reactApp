@@ -248,9 +248,9 @@ span.ant-checkbox-inner {
   color: white;
 }
 
-.all-btn{
-    display: flex;
-    justify-content: space-between;
+.all-btn {
+  display: flex;
+  justify-content: space-between;
 }
 
 .next:hover {

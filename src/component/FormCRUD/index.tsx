@@ -10,7 +10,13 @@ import {
 } from "antd";
 import { sendGet, sendPost } from "../../api";
 import "./style.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  inputText,
+  option,
+  passwordDefault,
+  radioInput,
+} from "../../constants";
 
 interface User {
   id: number;
@@ -22,76 +28,14 @@ interface User {
   switchForm: boolean;
   selectOption: boolean;
 }
+
 const FormCRUD = (props: any) => {
   const [dataUser, setDataUser] = useState<User | null>(null);
   const { id, setID, isOpen, setOpen, setDataSource } = props;
   const [statusSwitch, setStatusSwitch] = useState(false);
-  const [isChangePassword, setIsChangePassword] = useState(false);
+  const isChangePassword = useRef(false);
+
   const [form] = Form.useForm();
-  const passwordDefault = "****";
-
-  const inputText = [
-    {
-      label: "Username",
-      value: "userName",
-      type: "text",
-      placeHoler: "Enter username",
-      error: "You need enter username",
-      min: 1,
-      max: 30,
-    },
-    {
-      label: "Password",
-      value: "password",
-      placeHoler: "Enter password",
-      type: "password",
-      note: "Your password is between 4 and 12 characters",
-      error: "You need enter password",
-      setPassword: () => {
-        if (!isChangePassword && id) {
-          form.setFieldsValue({
-            password: "",
-          });
-        }
-      },
-      onChangePassword: () => {
-        setIsChangePassword(true);
-      },
-      blurPassword: () => {
-        if (!isChangePassword) {
-          form.setFieldsValue({
-            password: passwordDefault,
-          });
-        }
-      },
-      min: 4,
-      max: 12,
-    },
-    {
-      label: "Input Text Label",
-      value: "note",
-      type: "text",
-      placeHoler: "Typing here",
-      error: "You need enter Text Label",
-      min: 1,
-      max: 30,
-    },
-  ];
-
-  const radioInput = [
-    { name: "Radio selection 1", value: "1" },
-    { name: "Radio selection 2", value: "2" },
-    { name: "Radio selection 3", value: "3" },
-  ];
-
-  const option = [
-    "Dropdown option",
-    "Dropdown option 1",
-    "Dropdown option 2",
-    "Dropdown option 3",
-    "Dropdown option 4",
-    "Dropdown option 5",
-  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,6 +45,35 @@ const FormCRUD = (props: any) => {
       }
     };
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (id && isOpen) {
+      inputText.map((item) => {
+        if (item.value === "password") {
+          item.setPassword = () => {
+            if (!isChangePassword.current && id) {
+              form.setFieldsValue({
+                password: "",
+              });
+            }
+          };
+
+          item.onChangePassword = () => {
+            isChangePassword.current = true;
+            console.log("123123");
+          };
+
+          item.blurPassword = () => {
+            if (!isChangePassword.current) {
+              form.setFieldsValue({
+                password: passwordDefault,
+              });
+            }
+          };
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -139,15 +112,15 @@ const FormCRUD = (props: any) => {
         const newData = [...newDataSource, { id: id, ...submitData }];
 
         if (Array.isArray(prevData)) {
-          newData.sort((a: any, b: any) => a.id - b.id);
+          newData.sort((a: any, b: any) => -a.id + b.id);
         }
         return newData;
       });
     } else {
       const res = await sendPost(`saveProduct`, submitData);
       setDataSource((prevData: any) => [
-        ...prevData,
         { id: res.id, ...submitData },
+        ...prevData,
       ]);
     }
     setOpen(false);
@@ -193,10 +166,10 @@ const FormCRUD = (props: any) => {
                 type={dataInput.type}
                 id={dataInput.value}
                 className="input-text"
-                placeholder={dataInput.placeHoler}
-                onClick={dataInput?.setPassword}
-                onBlur={dataInput?.blurPassword}
-                onChange={dataInput?.onChangePassword}
+                placeholder={dataInput.placeHolder}
+                onClick={dataInput.setPassword}
+                onBlur={dataInput.blurPassword}
+                onChange={dataInput.onChangePassword}
                 autoComplete={`new-${dataInput.value}`}
               ></Input>
             </Form.Item>

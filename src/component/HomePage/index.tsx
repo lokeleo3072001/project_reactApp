@@ -12,7 +12,6 @@ function AllUser() {
   const [isOpenModalDelete, setIsOpenModalDelete] = useState(false);
 
   useEffect(() => {
-    console.log(1111);
     const fetchData = async () => {
       try {
         const res = await sendGet(`getAllProduct`);

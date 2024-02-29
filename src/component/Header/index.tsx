@@ -1,5 +1,5 @@
 function HeaderForm() {
-  return <h1>Chào mừng đến lớp học ReactJS</h1>;
+  return <h1 style={{ textAlign: "center" }}>Wibu nerver die</h1>;
 }
 
 export default HeaderForm;
