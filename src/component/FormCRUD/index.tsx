@@ -26,6 +26,7 @@ const FormCRUD = (props: any) => {
   const [dataUser, setDataUser] = useState<User | null>(null);
   const { id, setID, isOpen, setOpen, setDataSource } = props;
   const [statusSwitch, setStatusSwitch] = useState(false);
+  const [isChangePassword, setIsChangePassword] = useState(false);
   const [form] = Form.useForm();
 
   const inputText = [
@@ -45,6 +46,23 @@ const FormCRUD = (props: any) => {
       type: "password",
       note: "Your password is between 4 and 12 characters",
       error: "You need enter password",
+      setPassword: () => {
+        if (!isChangePassword && id) {
+          form.setFieldsValue({
+            password: "",
+          });
+        }
+      },
+      onChangePassword: () => {
+        setIsChangePassword(true);
+      },
+      blurPassword: () => {
+        if (!isChangePassword) {
+          form.setFieldsValue({
+            password: dataUser?.password,
+          });
+        }
+      },
       min: 4,
       max: 12,
     },
@@ -176,6 +194,9 @@ const FormCRUD = (props: any) => {
                   id={dataInput.value}
                   className="input-text"
                   placeholder={dataInput.placeHoler}
+                  onClick={dataInput?.setPassword}
+                  onBlur={dataInput?.blurPassword}
+                  onChange={dataInput?.onChangePassword}
                   autoComplete={`new-${dataInput.value}`}
                 ></Input>
               </Form.Item>

@@ -80,6 +80,7 @@ span.ant-checkbox-inner{
     border-right: 2px solid rgba(122,92,250,1);
     width: 8px;
     height: 16px;
+    margin-top: -2px;
 }
 
 .ant-checkbox .ant-checkbox-inner {
@@ -148,12 +149,14 @@ span.ant-checkbox-inner{
 }
 
 .ant-switch:not(.ant-switch-checked):hover .ant-switch-inner {
-    background-color: white; /* Đổi màu của button thành màu trắng khi hover */
+    background-color: white;
   }
 
 .ant-switch.ant-switch-checked{
     background-color: rgba(122,92,250,1);
 }
+
+.switch-form .ant-switch-checked .ant-switch-inner {border: none;}
 
 .ant-switch.ant-switch-checked:hover:not(.ant-switch-disabled){
     background-color: rgba(122,92,250,1);

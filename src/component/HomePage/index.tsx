@@ -40,7 +40,7 @@ function AllUser() {
       title: "UserName",
       dataIndex: "userName",
       key: "userName",
-      width: "15%",
+      width: "10%",
       render: (record: any) => {
         return (
           <>
@@ -66,7 +66,7 @@ function AllUser() {
       title: "Note",
       dataIndex: "note",
       key: "note",
-      width: "15%",
+      width: "10%",
       render: (record: any) => {
         return (
           <>
@@ -107,7 +107,7 @@ function AllUser() {
       title: "Remember Me",
       dataIndex: "rememberMe",
       key: "rememberMe",
-      width: "5%",
+      width: "10%",
       render: (record: any) => {
         return (
           <>
@@ -120,7 +120,7 @@ function AllUser() {
       title: "Select Option",
       dataIndex: "selectOption",
       key: "selectOption",
-      width: "20%",
+      width: "15%",
       render: (record: any) => {
         return (
           <>
@@ -135,31 +135,40 @@ function AllUser() {
       key: "id",
       width: "10%",
       render: (record: any) => {
-        return <Button onClick={() => deleteUser(record)}>Xoá</Button>;
-      },
-    },
-    {
-      title: "Change",
-      dataIndex: "id",
-      key: "id",
-      width: "10%",
-      render: (record: any) => {
-        return <Button onClick={() => changeUser(record)}>Sửa</Button>;
+        return (
+          <>
+            <Button
+              className="btn btn-delete"
+              onClick={() => deleteUser(record)}
+            >
+              Xoá
+            </Button>
+            <Button
+              className="btn btn-change"
+              onClick={() => changeUser(record)}
+            >
+              Sửa
+            </Button>
+          </>
+        );
       },
     },
   ];
 
   return (
     <div>
+      <Button className="btn-add" onClick={() => setOpenForm(!openForm)}>
+        Add
+      </Button>
       <Table
         dataSource={dataSource}
         columns={columns}
         className="table"
         rowKey="id"
+        // pagination={false}
+        pagination={{ pageSize: 5 }}
       />
-      <Button className="btn-add" onClick={() => setOpenForm(!openForm)}>
-        Add
-      </Button>
+
       {isOpenModalDelete && (
         <ModalAcceptDelete
           idDelete={id}
